@@ -109,7 +109,7 @@ export const GeneratedNumbersComponent = () => {
         <InputComponent
           isApproved={true}
           onChangeNumber={(value) => onChangeCount(value)}
-          number={state.count}
+          number={state.count.toString()}
           placeholder={state.count.toString()}
         />
       </View>
@@ -135,15 +135,20 @@ export const GeneratedNumbersComponent = () => {
           setNumbers(randomNumberGenerator(state));
         }}
       />
-      <Text style={{ margin: 20, fontSize: 20 }}>
-        {numbers.map((x) => x + " ")}
-      </Text>
+      <Text style={styles.numbers}>{numbers.map((x) => x + " ")}</Text>
       <HistoryComponent numberHistory={numberHistory} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  numbers: {
+    textAlign: "center",
+    margin: 20,
+    fontSize: 30,
+    color: "#2c6862",
+    fontWeight: "bold",
+  },
   root: {
     display: "flex",
     flexWrap: "wrap",
@@ -166,10 +171,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   checkboxContainer: {
+    borderColor: "#009688",
     flexDirection: "row",
     marginBottom: 20,
   },
   checkbox: {
+    borderColor: "#009688",
     borderRadius: 5,
     width: 40,
     padding: 15,

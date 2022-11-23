@@ -13,12 +13,16 @@ export const SignComponent = (props) => {
 
 const styles = StyleSheet.create({
   root: {
-    padding: 15,
-    borderRadius: 15,
-    backgroundColor: "#D5D5D5",
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderRadius: 10,
+    backgroundColor: "#009688",
     margin: 2,
   },
   text: {
+    color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
   },

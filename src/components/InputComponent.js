@@ -11,7 +11,7 @@ export const InputComponent = (props) => {
           styles.input,
           !isApproved
             ? { color: "red", borderColor: "red" }
-            : { color: "black", borderColor: "black" },
+            : { color: "#009688", borderColor: "#009688" },
         ]}
         onEndEditing={onEndEditing}
         onChangeText={onChangeNumber}
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     margin: 5,
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 10,
     padding: 10,
     fontSize: 20,
