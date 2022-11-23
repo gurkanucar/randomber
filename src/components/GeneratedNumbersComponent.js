@@ -28,9 +28,6 @@ export const GeneratedNumbersComponent = () => {
     greaterSign: "<",
   });
 
-  const [scrollToIndex, setScrollToIndex] = useState(0);
-  const [dataSourceCords, setDataSourceCords] = useState([]);
-  const [ref, setRef] = useState(null);
   const [isMaxApproved, setIsMaxApproved] = useState(true);
   const [isMinApproved, setIsMinApproved] = useState(true);
 
@@ -97,7 +94,18 @@ export const GeneratedNumbersComponent = () => {
         <InputComponent
           isApproved={true}
           onChangeNumber={(value) => {
-            dispatch({ type: "SET_COUNT", value: Number(value) });
+            let newText = "";
+            let numbers = "0123456789";
+
+            for (var i = 0; i < value.length; i++) {
+              if (numbers.indexOf(value[i]) > -1) {
+                newText = newText + value[i];
+              }
+            }
+            dispatch({
+              type: "SET_COUNT",
+              value: newText,
+            });
           }}
           number={state.count}
           placeholder={state.count.toString()}
@@ -115,7 +123,15 @@ export const GeneratedNumbersComponent = () => {
       </View>
       <ButtonComponent
         text="Generate"
-        onPress={() => setNumbers(randomNumberGenerator(state))}
+        onPress={() => {
+          if (state.count == "") {
+            dispatch({
+              type: "SET_COUNT",
+              value: 0,
+            });
+          }
+          setNumbers(randomNumberGenerator(state));
+        }}
       />
       <Text style={{ margin: 20, fontSize: 20 }}>
         {numbers.map((x) => x + " ")}
