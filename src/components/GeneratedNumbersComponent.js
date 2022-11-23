@@ -35,6 +35,21 @@ export const GeneratedNumbersComponent = () => {
 
   const [numberHistory, setNumberHistory] = useState([]);
 
+  const onChangeCount = (value) => {
+    let newText = "";
+    let numbers = "0123456789";
+
+    for (var i = 0; i < value.length; i++) {
+      if (numbers.indexOf(value[i]) > -1) {
+        newText = newText + value[i];
+      }
+    }
+    dispatch({
+      type: "SET_COUNT",
+      value: newText,
+    });
+  };
+
   useEffect(() => {
     if (numbers.length == 0) return;
     setNumberHistory([numbers, ...numberHistory]);
@@ -93,20 +108,7 @@ export const GeneratedNumbersComponent = () => {
         <Text style={styles.text}>Number Count:</Text>
         <InputComponent
           isApproved={true}
-          onChangeNumber={(value) => {
-            let newText = "";
-            let numbers = "0123456789";
-
-            for (var i = 0; i < value.length; i++) {
-              if (numbers.indexOf(value[i]) > -1) {
-                newText = newText + value[i];
-              }
-            }
-            dispatch({
-              type: "SET_COUNT",
-              value: newText,
-            });
-          }}
+          onChangeNumber={(value) => onChangeCount(value)}
           number={state.count}
           placeholder={state.count.toString()}
         />
