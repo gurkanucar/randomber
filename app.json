@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "randomber",
+    "name": "Randomber",
     "slug": "randomber",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,23 +11,32 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "androidStatusBar": {
+      "backgroundColor": "#2c6862",
+      "translucent": false
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "grkn"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.gucarsoft.randomber"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "05474007-dbac-4452-a51b-74d9e4ab71df"
+      }
     }
   }
 }
