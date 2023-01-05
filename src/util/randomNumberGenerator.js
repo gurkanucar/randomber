@@ -1,4 +1,5 @@
 import { Alert } from "react-native";
+import { CustomErrors } from "../errors/CustomErrors";
 
 export default (data) => {
   // const [state, dispatch] = useReducer(generateNumberReducer, {
@@ -13,6 +14,14 @@ export default (data) => {
   //   });
 
   let { min, max, count, uniqueNumbers, lessSign, greaterSign } = data;
+
+  if (count == "" || count == "0") {
+    throw Error(CustomErrors.NumberCountError);
+  }
+  if (max === "" || min === "") {
+    throw Error(CustomErrors.ConstraintsError);
+  }
+
   min = parseInt(min);
   max = parseInt(max);
   count = parseInt(count);
@@ -27,8 +36,10 @@ export default (data) => {
   }
 
   if (max - min <= 1 && lessSign == "<" && greaterSign == "<") {
-    Alert.alert("ERROR!", "You can not create values by given constraints :(");
-    return selectedNumbers;
+    throw Error(CustomErrors.ConstraintsError);
+  }
+  if (Math.abs(tempMax - tempMin) < 2) {
+    throw Error(CustomErrors.ConstraintsError);
   }
 
   if (uniqueNumbers == false) {
@@ -43,13 +54,7 @@ export default (data) => {
       tempMax = max + 1;
     }
     if (tempMax - tempMin < count) {
-      Alert.alert(
-        "ERROR!",
-        "You can not create unique values by given constraints but we have created not unique values :)"
-      );
-      for (let i = 0; i < count; i++) {
-        selectedNumbers.push(getRndInteger(min, max, lessSign, greaterSign));
-      }
+      throw Error(CustomErrors.UniqueValuesError);
     } else {
       for (let i = 0; i < count; i++) {
         let temp = getRndInteger(min, max, lessSign, greaterSign);

@@ -1,19 +1,20 @@
 import Checkbox from "expo-checkbox";
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
-  Button,
-  Keyboard,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
+  BackHandler,
+  Alert,
+  Keyboard,
 } from "react-native";
 import { generateNumberReducer } from "../reducer/GenerateNumberReducer";
 import randomNumberGenerator from "../util/randomNumberGenerator";
 import { ButtonComponent } from "./ButtonComponent";
 import HistoryComponent from "./HistoryComponent";
 import { InputComponent } from "./InputComponent";
+import PropertiesComponent from "./PropertiesComponent";
 import { SignComponent } from "./SignComponent";
 
 export const GeneratedNumbersComponent = () => {
@@ -28,11 +29,10 @@ export const GeneratedNumbersComponent = () => {
     greaterSign: "<",
   });
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [isMaxApproved, setIsMaxApproved] = useState(true);
   const [isMinApproved, setIsMinApproved] = useState(true);
-
   const [numbers, setNumbers] = useState([]);
-
   const [numberHistory, setNumberHistory] = useState([]);
 
   const onChangeCount = (value) => {
@@ -56,16 +56,71 @@ export const GeneratedNumbersComponent = () => {
   }, [numbers]);
 
   useEffect(() => {
-    if (!isMaxApproved) return;
-    dispatch({ type: "CHECK_CONSTRAINTS" });
-    setIsMaxApproved(true);
-  }, [isMaxApproved]);
+    if (!isMaxApproved || !isMinApproved) return;
+    if (isMaxApproved) {
+      dispatch({ type: "CHECK_CONSTRAINTS" });
+      setIsMaxApproved(true);
+    } else if (isMinApproved) {
+      dispatch({ type: "CHECK_CONSTRAINTS" });
+      setIsMinApproved(true);
+    }
+  }, [isMaxApproved, isMinApproved]);
 
   useEffect(() => {
-    if (!isMinApproved) return;
-    dispatch({ type: "CHECK_CONSTRAINTS" });
-    setIsMinApproved(true);
-  }, [isMinApproved]);
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+        setIsMinApproved(true);
+        setIsMaxApproved(true);
+        console.log("keyboard closed");
+        // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const generateNumbers = () => {
+    try {
+      if (!isMaxApproved || !isMinApproved) {
+        throw Error("You have to submit your constraints!");
+      }
+      setNumbers(randomNumberGenerator(state));
+    } catch (e) {
+      Alert.alert("Ups!", e.message);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -74,6 +129,14 @@ export const GeneratedNumbersComponent = () => {
           isApproved={isMinApproved}
           onEndEditing={() => {
             setIsMinApproved(true);
+          }}
+          onFocus={() => {
+            console.log("focus");
+            if (state.tempMin.toString() == "0") {
+              dispatch({ type: "SET_TEMP_MIN", value: "" });
+              setIsMinApproved(true);
+              dispatch({ type: "CHECK_CONSTRAINTS" });
+            }
           }}
           onChangeNumber={(value) => {
             dispatch({ type: "SET_TEMP_MIN", value: value });
@@ -93,6 +156,13 @@ export const GeneratedNumbersComponent = () => {
         />
         <InputComponent
           isApproved={isMaxApproved}
+          onFocus={() => {
+            if (state.tempMax.toString() == "0") {
+              dispatch({ type: "SET_TEMP_MAX", value: "" });
+              setIsMaxApproved(true);
+              dispatch({ type: "CHECK_CONSTRAINTS" });
+            }
+          }}
           onEndEditing={() => {
             setIsMaxApproved(true);
           }}
@@ -104,37 +174,14 @@ export const GeneratedNumbersComponent = () => {
           placeholder={state.tempMax.toString()}
         />
       </View>
-      <View style={styles.countView}>
-        <Text style={styles.text}>Number Count:</Text>
-        <InputComponent
-          isApproved={true}
-          onChangeNumber={(value) => onChangeCount(value)}
-          number={state.count.toString()}
-          placeholder={state.count.toString()}
-        />
-      </View>
-      <View style={styles.countView}>
-        <Text style={styles.text}>Unique Numbers: </Text>
-        <Checkbox
-          value={state.uniqueNumbers}
-          onValueChange={(value) =>
-            dispatch({ type: "SET_UNIQUE_NUMBERS", value })
-          }
-          style={styles.checkbox}
-        />
-      </View>
-      <ButtonComponent
-        text="Generate"
-        onPress={() => {
-          if (state.count == "") {
-            dispatch({
-              type: "SET_COUNT",
-              value: 0,
-            });
-          }
-          setNumbers(randomNumberGenerator(state));
-        }}
+
+      <PropertiesComponent
+        onChangeCount={onChangeCount}
+        state={state}
+        dispatch={dispatch}
       />
+
+      <ButtonComponent text="Generate" onPress={generateNumbers} />
       <Text style={styles.numbers}>{numbers.map((x) => x + " ")}</Text>
       <HistoryComponent numberHistory={numberHistory} />
     </SafeAreaView>

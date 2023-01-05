@@ -15,19 +15,25 @@ export const generateNumberReducer = (state, action) => {
     case "SET_TEMP_MIN": {
       return {
         ...state,
-        tempMin: action.value,
+        tempMin:
+          action.value == "0"
+            ? "0"
+            : action.value.replace(/\D/g, "").replace(/^0+/, ""),
       };
     }
     case "SET_TEMP_MAX": {
       return {
         ...state,
-        tempMax: action.value,
+        tempMax:
+          action.value == "0"
+            ? "0"
+            : action.value.replace(/\D/g, "").replace(/^0+/, ""),
       };
     }
     case "SET_COUNT": {
       return {
         ...state,
-        count: action.value,
+        count: action.value.replace(/\D/g, "").replace(/^0+/, ""),
       };
     }
     case "TOGGLE_LESS_SIGN": {
