@@ -2,8 +2,14 @@ import React from "react";
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 
 export const InputComponent = (props) => {
-  const { onChangeNumber, number, placeholder, onEndEditing, isApproved } =
-    props;
+  const {
+    onChangeNumber,
+    number,
+    placeholder,
+    onEndEditing,
+    isApproved,
+    onFocus,
+  } = props;
   return (
     <SafeAreaView style={styles.root}>
       <TextInput
@@ -15,6 +21,7 @@ export const InputComponent = (props) => {
         ]}
         onEndEditing={onEndEditing}
         onChangeText={onChangeNumber}
+        onFocus={onFocus}
         value={number}
         placeholder={placeholder}
         keyboardType="numeric"

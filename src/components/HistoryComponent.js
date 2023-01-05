@@ -1,10 +1,5 @@
-// Scroll to a Specific Item in ScrollView List View
-// https://aboutreact.com/scroll_to_a_specific_item_in_scrollview_list_view/
-
-// import React in our code
 import React, { useState, useEffect } from "react";
 
-// import all the components we are going to use
 import {
   SafeAreaView,
   View,
@@ -19,14 +14,11 @@ import { HistoryItemComponent } from "./HistoryItemComponent";
 const HistoryComponent = (props) => {
   const { numberHistory } = props;
 
-  const [scrollToIndex, setScrollToIndex] = useState(0);
   const [dataSourceCords, setDataSourceCords] = useState([]);
   const [ref, setRef] = useState(null);
 
-
   const ItemView = (item, key) => {
     return (
-      // Flat List Item
       <View
         key={key}
         style={styles.item}
@@ -49,7 +41,6 @@ const HistoryComponent = (props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        {/* List Item as a function */}
         <ScrollView
           ref={(ref) => {
             setRef(ref);

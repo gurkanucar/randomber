@@ -9,6 +9,7 @@ import {
   Alert,
   Keyboard,
 } from "react-native";
+import { CustomErrors } from "../errors/CustomErrors";
 import { generateNumberReducer } from "../reducer/GenerateNumberReducer";
 import randomNumberGenerator from "../util/randomNumberGenerator";
 import { ButtonComponent } from "./ButtonComponent";
@@ -90,6 +91,11 @@ export const GeneratedNumbersComponent = () => {
     };
   }, []);
 
+  const clearValues = () => {
+    setNumberHistory([]);
+    setNumbers([]);
+  };
+
   useEffect(() => {
     const backAction = () => {
       Alert.alert("Hold on!", "Are you sure you want to go back?", [
@@ -114,11 +120,14 @@ export const GeneratedNumbersComponent = () => {
   const generateNumbers = () => {
     try {
       if (!isMaxApproved || !isMinApproved) {
-        throw Error("You have to submit your constraints!");
+        throw Error(CustomErrors.SubmitConstraintsError);
       }
       setNumbers(randomNumberGenerator(state));
     } catch (e) {
       Alert.alert("Ups!", e.message);
+      if (e.message == CustomErrors.UniqueValuesError) {
+        dispatch({ type: "SET_UNIQUE_NUMBERS", value: false });
+      }
     }
   };
 
@@ -181,7 +190,14 @@ export const GeneratedNumbersComponent = () => {
         dispatch={dispatch}
       />
 
-      <ButtonComponent text="Generate" onPress={generateNumbers} />
+      <View style={styles.buttons}>
+        <ButtonComponent
+          text="Clear Values"
+          color="#0097FF"
+          onPress={clearValues}
+        />
+        <ButtonComponent text="Generate" onPress={generateNumbers} />
+      </View>
       <Text style={styles.numbers}>{numbers.map((x) => x + " ")}</Text>
       <HistoryComponent numberHistory={numberHistory} />
     </SafeAreaView>
@@ -204,13 +220,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 10,
   },
+  buttons: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 10,
+  },
   countView: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
     marginLeft: 20,
-    marginTop: 10,
   },
   text: {
     color: "#2c6862",

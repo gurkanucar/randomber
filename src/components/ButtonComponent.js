@@ -2,10 +2,17 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export const ButtonComponent = (props) => {
+  const color = props.color;
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <TouchableOpacity
-        style={styles.appButtonContainer}
+        style={[
+          styles.appButtonContainer,
+          {
+            backgroundColor: color || "#009688",
+          },
+        ]}
         onPress={props.onPress}
       >
         <Text style={styles.appButtonText}>{props.text}</Text>
@@ -24,6 +31,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginLeft: 15,
     marginRight: 15,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
   },
   appButtonText: {
     fontSize: 18,
