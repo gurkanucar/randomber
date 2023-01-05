@@ -8,6 +8,7 @@ import {
   BackHandler,
   Alert,
   Keyboard,
+  ScrollView,
 } from "react-native";
 import { CustomErrors } from "../errors/CustomErrors";
 import { generateNumberReducer } from "../reducer/GenerateNumberReducer";
@@ -190,13 +191,24 @@ export const GeneratedNumbersComponent = () => {
         />
         <ButtonComponent text="Generate" onPress={generateNumbers} />
       </View>
-      <Text style={styles.numbers}>{numbers.map((x) => x + " ")}</Text>
+      <View style={{ height: 80 }}>
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={styles.numbersScrollView}
+        >
+          <Text style={styles.numbers}>{numbers.map((x) => x + " ")}</Text>
+        </ScrollView>
+      </View>
       <HistoryComponent numberHistory={numberHistory} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  numbersScrollView: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   numbers: {
     textAlign: "center",
     margin: 20,
